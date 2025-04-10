@@ -1,0 +1,18 @@
+# Windows system files
+*.db
+*.bak
+*.log
+
+# .NET build directories
+bin/
+obj/
+
+# ASP.NET Core specific
+wwwroot/
+appsettings.json
+
+# User-specific files (macOS, IDEs, etc.)
+.vs/
+.idea/
+.DS_Store
+
