@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Welcome";
+    var email = User.Identity?.Name;
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4 text-primary">Welcome to SmartCRMShield</h1>
+        <p class="lead mt-3">
+            Hello <strong>@email</strong>!  
+            You are logged in as <span class="badge bg-@(isAdmin ? "danger" : "secondary")">@(isAdmin ? "Admin" : "Client")</span>.
+        </p>
+        <p class="text-muted">
+            @(isAdmin 
+                ? "You are here to monitor flagged transactions, approve/reject fraud alerts, and manage the system."
+                : "Manage your transactions and stay on top of your financial activity.")
+        </p>
+
+        <div class="d-grid gap-2 col-6 mx-auto mt-4">
+            @if (isAdmin)
+            {
+                <!-- Admin can only view transactions -->
+                <a class="btn btn-warning btn-lg" asp-controller="Transactions" asp-action="Index">
+                    View and Manage Transactions
+                </a>
+            }
+            else
+            {
+                <!-- Client can create new transaction -->
+                <a class="btn btn-success btn-lg" asp-controller="Transactions" asp-action="Create">
+                    Create New Transaction
+                </a>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+@model IEnumerable<SmartCRMShield.Models.Transaction>
+@{
+    ViewData["Title"] = "Transactions";
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Summary Section -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Transactions</h5>
+                <p class="card-text">@ViewBag.TotalTransactions</p>
+            </div>
+        </div>
+    </div>
+    @if (isAdmin)
+    {
+        <div class="col-md-4">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Total Fraud Alerts</h5>
+                    <p class="card-text">@ViewBag.TotalFraudAlerts</p>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Total Amount Spent (€)</h5>
+                    <p class="card-text">@ViewBag.TotalAmountSpent</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Show "Create New Transaction" only for clients -->
+@if (!isAdmin)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">New Transaction</a>
+    </p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Amount (€)</th>
+            <th>Date</th>
+            @if (isAdmin)
+            {
+                <th>Fraud</th>
+                <th>Status</th>
+                <th>Action</th>
+            }
+            else
+            {
+                <th>Notes</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var txn in Model)
+        {
+            <tr>
+                <td>@txn.UserEmail</td>
+                <td>@txn.Amount</td>
+                <td>@txn.Date.ToShortDateString()</td>
+
+                @if (isAdmin)
+                {
+                    <td>
+                        @if (txn.IsFraudAlert)
+                        {
+                            <span class="text-danger fw-bold">⚠️ FRAUD</span>
+                        }
+                        else
+                        {
+                            <span class="text-success">OK</span>
+                        }
+                    </td>
+                    <td>
+                        @if (txn.IsBlocked)
+                        {
+                            <span class="badge bg-danger">Blocked</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="ToggleBlock" method="post" asp-route-id="@txn.Id">
+                            <button class="btn btn-sm @(txn.IsBlocked ? "btn-danger" : "btn-warning")">
+                                @(txn.IsBlocked ? "Unblock" : "Block")
+                            </button>
+                        </form>
+                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-transaction-id="@txn.Id">
+                            Delete
+                        </button>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @if (txn.IsBlocked)
+                        {
+                            <span class="text-danger">⚠️ This transaction was blocked by an administrator.</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">OK</span>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this transaction?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var deleteForm = document.getElementById('deleteForm');
+        document.querySelectorAll('[data-bs-target="#deleteModal"]').forEach(button => {
+            button.addEventListener('click', function () {
+                var transactionId = this.getAttribute('data-transaction-id');
+                deleteForm.action = `/Transactions/Delete/${transactionId}`;
+            });
+        });
+    </script>
+}
