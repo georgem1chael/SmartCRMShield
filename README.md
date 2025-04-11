@@ -56,6 +56,43 @@ SmartCRMShield is a robust and scalable CRM (Customer Relationship Management) a
 - **ASP.NET Core Identity**: For user authentication and authorization.
 - **Bootstrap**: For responsive UI design.
 
+## 📸 Screenshots
+
+### 🏠 Home Page
+![Home](screenshots/1_home.png)
+
+### 📝 Register
+![Register](screenshots/2_register.png)
+
+### 🔐 Login
+![Login](screenshots/3_login.png)
+
+### 🧑‍💼 Admin Dashboard
+Landing view for admin users.
+![Admin Dashboard](screenshots/4_admin_dashboard.png)
+
+### 📋 Admin Transactions View
+Admin sees all transactions (flagged or not).
+![Admin Transactions](screenshots/5_admin_transactions.png)
+
+### 🚫 Block & Delete Fraudulent Transactions
+Admins can block or delete transactions as needed.
+![Block Transaction](screenshots/6_admin_block_transaction.png)
+![Delete Transaction](screenshots/7_admin_delete_transaction.png)
+
+### 👤 Client Dashboard
+Client landing page after login.
+![Client Dashboard](screenshots/8_client_dashboard.png)
+
+### ➕ Client View & Create Transactions
+Clients can view or create new transactions.
+![Client Transactions](screenshots/9_client_transactions.png)
+![New Transaction](screenshots/10_client_create_transaction.png)
+
+### 🔒 Blocked Transaction View
+Clients see blocked status where applicable.
+![Client Blocked](screenshots/11_client_blocked_view.png)
+
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
